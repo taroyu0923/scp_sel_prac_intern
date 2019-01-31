@@ -10,9 +10,7 @@ import csv
 # set other item
 
 timer_start = time.time()
-print("Please input scroll count:")
-input_scroll_count = int(input())
-
+# method
 # method to correct page number
 def count_finder (text_data):
     count = 0
@@ -20,6 +18,7 @@ def count_finder (text_data):
         count = count + 1
     print('Total data is:', count)
     return count
+
 # method to adjust dom
 def data_adjust (dom_text):
     result = []
@@ -28,25 +27,35 @@ def data_adjust (dom_text):
         print(message)
         result.append(message)
     return result
+
 # method to find element by css celector
 def find_elements_by_css (item ,path):
     dom = item.find_elements_by_css_selector(path)
     return dom
-# set webdriver & target site
+
+# set webdriver & target site # example:dcard
+
 browser = webdriver.Chrome()
 tar_URL1 = 'https://www.dcard.tw/f?latest=true'
 browser.get(tar_URL1)
 
-for scroll_count in range(1,input_scroll_count):
+# set scroll count in selenium
+
+print("Please input scroll count:")
+input_scroll_count = int(input())
+for scroll_count in range(0,input_scroll_count):
     browser.execute_script("window.scrollTo(0,100000)")
     time.sleep(2)
     scroll_count = scroll_count+1
+    print('process...', int((scroll_count / input_scroll_count) * 100), '%')
 
 # get web data
 
 result_li = [] # set the result area
+
 dom = BeautifulSoup(browser.page_source, 'html.parser')
 total_dom = browser.find_elements_by_css_selector('a[class^= "PostEntry_root"]')
+
 try:
     for i in range(len(total_dom)):
         dic = {}
@@ -55,8 +64,10 @@ try:
         dic['author'] = total_dom[i].find_element_by_css_selector('span[class^= "PostAuthor_root"]').text
         dic['likecount'] = total_dom[i].find_element_by_css_selector('div[class^= "PostEntry__LikeCount"]').text
         dic['entry'] = total_dom[i].find_element_by_css_selector('span[class^= "PostEntry_forum"]').text
+        # error problem in desp part
         # dic['desp'] = total_dom[i].find_element_by_css_selector('div[class^= "PostEntry_excerpt"]').text
         result_li.append(dic)
+        print('collect data...', int((i / len(total_dom)) * 100), '%')
     pprint(result_li)
 except Exception as e:
     print('exception type is:')
@@ -68,15 +79,15 @@ except Exception as e:
 print('-------------Close Browser---------------')
 browser.close()
 
-# output
+# write file
 
-'''
 with open('output_dataset.csv', 'w', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
     for i in result_li:
         writer.writerow(result_li)
-'''
-#counter = count_finder(dom_title)
+    print('Output finish!!')
+
+# output
 
 timer_end = time.time()
 count_finder(total_dom)

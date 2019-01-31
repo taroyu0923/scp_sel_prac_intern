@@ -13,3 +13,4 @@ class Test1Item(scrapy.Item):
     title = scrapy.Field()
     link = scrapy.Field()
     desc = scrapy.Field()
+    content = scrapy.Field()

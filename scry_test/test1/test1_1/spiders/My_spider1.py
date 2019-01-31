@@ -16,8 +16,7 @@ class My_spider1(scrapy.Spider):
                 'author':response.css('a.author::text').extract(),
                 'tags':response.css('ul.post-categories > li a::text').extract()
             }
-            '''
             next_page = response.css('div.nav-previous a::attr("href")').extract_first()
         if next_page is not None:
-            yield response.follow(next_page, self.parse)
-            '''
+            yield 
+            response.follow(next_page, self.parse)
